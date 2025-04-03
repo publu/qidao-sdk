@@ -126,6 +126,8 @@ import {
   Erc20Stablecoin__factory,
   GraceQiVault,
   GraceQiVault__factory,
+  GraceQiVaultOld,
+  GraceQiVaultOld__factory,
   StableQiVault,
   StableQiVault__factory,
 } from './contracts'
@@ -325,32 +327,30 @@ export type VaultShortName =
   | 'cbbtc'
 
 export type RawVaultContractAbiV1 =
-    | typeof qiStablecoin
-    | typeof erc20Stablecoin
-    | typeof erc20QiStablecoinwbtc
-    | typeof erc20QiStablecoincamwbtc
-    | typeof crosschainQiStablecoin
-    | typeof crosschainNativeQiStablecoin
-    | typeof crosschainQiStablecoinV2
-    | typeof crosschainQiStablecoinSlim
-    | typeof crosschainQiStablecoinSlimV2
-    | typeof crosschainQiStablecoinwbtc
+  | typeof qiStablecoin
+  | typeof erc20Stablecoin
+  | typeof erc20QiStablecoinwbtc
+  | typeof erc20QiStablecoincamwbtc
+  | typeof crosschainQiStablecoin
+  | typeof crosschainNativeQiStablecoin
+  | typeof crosschainQiStablecoinV2
+  | typeof crosschainQiStablecoinSlim
+  | typeof crosschainQiStablecoinSlimV2
+  | typeof crosschainQiStablecoinwbtc
 
 export type VaultContractDiscriminatorV1 =
-    | 'QiStablecoin'
-    | 'Erc20Stablecoin'
-    | 'Erc20QiStablecoinwbtc'
-    | 'Erc20QiStablecoincamwbtc'
-    | 'CrosschainQiStablecoin'
-    | 'CrosschainNativeQiStablecoin'
-    | 'CrosschainQiStablecoinV2'
-    | 'CrosschainQiStablecoinSlim'
-    | 'CrosschainQiStablecoinSlimV2'
-    | 'CrosschainQiStablecoinwbtc'
+  | 'QiStablecoin'
+  | 'Erc20Stablecoin'
+  | 'Erc20QiStablecoinwbtc'
+  | 'Erc20QiStablecoincamwbtc'
+  | 'CrosschainQiStablecoin'
+  | 'CrosschainNativeQiStablecoin'
+  | 'CrosschainQiStablecoinV2'
+  | 'CrosschainQiStablecoinSlim'
+  | 'CrosschainQiStablecoinSlimV2'
+  | 'CrosschainQiStablecoinwbtc'
 
-export type VaultContractDiscriminatorV2 =
-    | 'StableQiVault'
-    | 'GraceQiVault'
+export type VaultContractDiscriminatorV2 = 'StableQiVault' | 'GraceQiVault'
 
 export type VaultContractDiscriminator = VaultContractDiscriminatorV1 | VaultContractDiscriminatorV2
 
@@ -407,7 +407,7 @@ export interface GAUGE_VALID_COLLATERAL extends COLLATERAL {
 
 export interface COLLATERAL_V2 extends Omit<COLLATERAL, 'version' | 'connect' | 'contractAbi' | 'rawAbi' | 'discriminator'> {
   version: 2
-  connect(address: string, signerOrProvider: Signer | Provider): StableQiVault | GraceQiVault
+  connect(address: string, signerOrProvider: Signer | Provider): StableQiVault | GraceQiVault | GraceQiVaultOld
   discriminator: VaultContractDiscriminatorV2
 }
 
@@ -422,7 +422,7 @@ export function isV2QiVault(
 }
 
 export function isGraceQiVault(
-    vaultContract: ReturnType<COLLATERAL['connect'] | COLLATERAL_V2['connect']>
+  vaultContract: ReturnType<COLLATERAL['connect'] | COLLATERAL_V2['connect']>
 ): vaultContract is GraceQiVault {
   return 'setUserVotes' in vaultContract
 }
@@ -445,7 +445,7 @@ export const DISCRIMINATOR_TO_ABI = {
   Erc20Stablecoin: erc20Stablecoin,
   StableQiVault: stableQiVault,
   GraceQiVault: graceQiVault,
-  QiStablecoin: qiStablecoin
+  QiStablecoin: qiStablecoin,
 } satisfies Record<VaultContractDiscriminator, RawVaultContractAbi>
 
 const MAINNET_COLLATERALS = [
@@ -564,7 +564,13 @@ const MAINNET_COLLATERALS = [
     vaultAddress: ETH_YVCURVE_STETH_F_VAULT_ADDRESS,
     fallbackUnderlyingAddress: STETH_ADDRESS,
     chainId: ChainId.MAINNET,
-    token: new Token(ChainId.MAINNET, '0x5B8C556B8b2a78696F0B9B830B3d67623122E270', 18, 'yvCurve-stETH-f', 'Curve stETH Factory yVault'),
+    token: new Token(
+      ChainId.MAINNET,
+      '0x5B8C556B8b2a78696F0B9B830B3d67623122E270',
+      18,
+      'yvCurve-stETH-f',
+      'Curve stETH Factory yVault'
+    ),
     connect: StableQiVault__factory.connect,
     discriminator: 'StableQiVault',
     minimumCDR: 125,
@@ -581,7 +587,13 @@ const MAINNET_COLLATERALS = [
     vaultAddress: ETH_SDSTECRV_VAULT_ADDRESS,
     fallbackUnderlyingAddress: STETH_ADDRESS,
     chainId: ChainId.MAINNET,
-    token: new Token(ChainId.MAINNET, '0xbC10c4F7B9FE0B305e8639B04c536633A3dB7065', 18, 'sdsteCRV', 'StakeDAO Curve.fi ETH/stETH'),
+    token: new Token(
+      ChainId.MAINNET,
+      '0xbC10c4F7B9FE0B305e8639B04c536633A3dB7065',
+      18,
+      'sdsteCRV',
+      'StakeDAO Curve.fi ETH/stETH'
+    ),
     connect: StableQiVault__factory.connect,
     discriminator: 'StableQiVault',
     minimumCDR: 125,
@@ -598,7 +610,13 @@ const MAINNET_COLLATERALS = [
     vaultAddress: ETH_BEEFY_CONVEX_STETH_VAULT_ADDRESS,
     fallbackUnderlyingAddress: STETH_ADDRESS,
     chainId: ChainId.MAINNET,
-    token: new Token(ChainId.MAINNET, '0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D', 18, 'mooConvexStETH', 'Moo Convex stETH'),
+    token: new Token(
+      ChainId.MAINNET,
+      '0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D',
+      18,
+      'mooConvexStETH',
+      'Moo Convex stETH'
+    ),
     connect: StableQiVault__factory.connect,
     discriminator: 'StableQiVault',
     minimumCDR: 125,
@@ -677,7 +695,6 @@ const MAINNET_COLLATERALS = [
     addedAt: 1685365200,
     deprecated: false,
   },
-
 ] satisfies (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
 
 const FANTOM_COLLATERALS = [
@@ -785,7 +802,7 @@ const FANTOM_COLLATERALS = [
     subgraph: 'https://api.thegraph.com/subgraphs/name/0xlaozi/qi-dao-yvdai-vaults',
     frontend: FRONTEND.MAI,
     version: 1,
-    underlyingIds: ["yearn-finance", 'daidai'],
+    underlyingIds: ['yearn-finance', 'daidai'],
     platform: ['Yearn'],
     addedAt: MAI_BIRTHDAY,
     deprecated: true,
@@ -1249,7 +1266,13 @@ const ARBITRUM_COLLATERALS = [
     shortName: 'knc',
     vaultAddress: ARBI_KNC_VAULT_ADDRESS,
     chainId: ChainId.ARBITRUM,
-    token: new Token(ChainId.ARBITRUM, '0xe4DDDfe67E7164b0FE14E218d80dC4C08eDC01cB', 18, 'KNC', 'Kyber Network Crystal (v2)'),
+    token: new Token(
+      ChainId.ARBITRUM,
+      '0xe4DDDfe67E7164b0FE14E218d80dC4C08eDC01cB',
+      18,
+      'KNC',
+      'Kyber Network Crystal (v2)'
+    ),
     connect: StableQiVault__factory.connect,
     discriminator: 'StableQiVault',
     minimumCDR: 140,
@@ -1267,11 +1290,11 @@ const ARBITRUM_COLLATERALS = [
     connect: StableQiVault__factory.connect,
     discriminator: 'StableQiVault',
     token: new Token(
-        ChainId.ARBITRUM,
-        '0x9E75f8298e458B76382870982788988A0799195b',
-        18,
-        'mooCurveWSTETH',
-        'Moo Curve wstETH'
+      ChainId.ARBITRUM,
+      '0x9E75f8298e458B76382870982788988A0799195b',
+      18,
+      'mooCurveWSTETH',
+      'Moo Curve wstETH'
     ),
     minimumCDR: 125,
     frontend: FRONTEND.MAI,
@@ -1289,13 +1312,7 @@ const ARBITRUM_COLLATERALS = [
     chainId: ChainId.ARBITRUM,
     connect: StableQiVault__factory.connect,
     discriminator: 'StableQiVault',
-    token: new Token(
-        ChainId.ARBITRUM,
-        ARBI_ARB_ADDRESS,
-        18,
-        'ARB',
-        'Arbitrum'
-    ),
+    token: new Token(ChainId.ARBITRUM, ARBI_ARB_ADDRESS, 18, 'ARB', 'Arbitrum'),
     minimumCDR: 155,
     frontend: FRONTEND.MAI,
     version: 2,
@@ -1372,7 +1389,7 @@ const OPTIMISM_COLLATERALS = [
     frontend: FRONTEND.MAI,
     version: 2,
     underlyingIds: ['daidai'],
-    platform: ['Beefy', "AaveV3"],
+    platform: ['Beefy', 'AaveV3'],
     addedAt: MAI_BIRTHDAY,
     deprecated: true,
   },
@@ -1395,7 +1412,7 @@ const OPTIMISM_COLLATERALS = [
     version: 2,
     snapshotName: 'Beefy Aave ETH (Optimism)',
     underlyingIds: ['weth'],
-    platform: ['Beefy', "AaveV3"],
+    platform: ['Beefy', 'AaveV3'],
     addedAt: MAI_BIRTHDAY,
     deprecated: true,
   },
@@ -1418,7 +1435,7 @@ const OPTIMISM_COLLATERALS = [
     version: 2,
     snapshotName: 'Beefy Aave BTC (Optimism)',
     underlyingIds: ['wrapped-bitcoinwbtc'],
-    platform: ['Beefy', "AaveV3"],
+    platform: ['Beefy', 'AaveV3'],
     addedAt: MAI_BIRTHDAY,
     deprecated: true,
   },
@@ -1489,7 +1506,13 @@ const OPTIMISM_COLLATERALS = [
     shortName: 'knc',
     vaultAddress: OP_KNC_VAULT_ADDRESS,
     chainId: ChainId.OPTIMISM,
-    token: new Token(ChainId.OPTIMISM, '0xa00E3A3511aAC35cA78530c85007AFCd31753819', 18, 'KNC', 'Kyber Network Crystal (v2)'),
+    token: new Token(
+      ChainId.OPTIMISM,
+      '0xa00E3A3511aAC35cA78530c85007AFCd31753819',
+      18,
+      'KNC',
+      'Kyber Network Crystal (v2)'
+    ),
     connect: StableQiVault__factory.connect,
     discriminator: 'StableQiVault',
     minimumCDR: 140,
@@ -1764,7 +1787,7 @@ const XDAI_COLLATERALS = [
     underlyingIds: ['daidai'],
     addedAt: 1697608800,
     deprecated: false,
-  }
+  },
 ] satisfies (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
 
 const MATIC_COLLATERALS = [
@@ -2169,7 +2192,7 @@ const MATIC_COLLATERALS = [
     underlyingIds: ['aavegotchi'],
     addedAt: MAI_BIRTHDAY,
     deprecated: true,
-    platform: ['GotchiVault']
+    platform: ['GotchiVault'],
   },
   {
     shortName: 'celsius',
@@ -2368,11 +2391,11 @@ const MATIC_COLLATERALS = [
     connect: StableQiVault__factory.connect,
     discriminator: 'StableQiVault',
     token: new Token(
-        ChainId.MATIC,
-        '0xcC03032fBf096F14a2DE8809c79d8b584151212B',
-        18,
-        'wstETH',
-        'Wrapped liquid staked Ether 2.0'
+      ChainId.MATIC,
+      '0xcC03032fBf096F14a2DE8809c79d8b584151212B',
+      18,
+      'wstETH',
+      'Wrapped liquid staked Ether 2.0'
     ),
     minimumCDR: 130,
     frontend: FRONTEND.MAI,
@@ -2630,7 +2653,7 @@ const BASE_COLLATERALS = [
     vaultAddress: BASE_OLD_VE_AERO_VAULT_ADDRESS,
     chainId: ChainId.BASE,
     token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
-    connect: GraceQiVault__factory.connect,
+    connect: GraceQiVaultOld__factory.connect,
     discriminator: 'GraceQiVault',
     minimumCDR: 300,
     frontend: FRONTEND.MAI,
