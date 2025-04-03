@@ -33,6 +33,7 @@ import {
   BASE_MORHPO_GAUNTLET_PSM_ADDRESS,
   BASE_MORPHO_STEAKHOUSE_PSM_ADDRESS,
   BASE_VE_AERO_VAULT_ADDRESS,
+  BASE_OLD_VE_AERO_VAULT_ADDRESS,
   BASE_WETH_ADDRESS,
   BASE_WETH_VAULT_ADDRESS,
   BASE_WSTETH_ADDRESS,
@@ -129,10 +130,10 @@ import {
   StableQiVault__factory,
 } from './contracts'
 //DO NOT SHORTEN THESE IMPORTS, ITS BREAKS EVERYTHING, GOD KNOWS WHY
-import {QiStablecoin__factory} from './contracts/factories/QiStablecoin__factory'
-import {QiStablecoin} from './contracts/QiStablecoin'
-import {Token} from './entities'
-import {PLATFORM} from "./ProtocolInfo";
+import { QiStablecoin__factory } from './contracts/factories/QiStablecoin__factory'
+import { QiStablecoin } from './contracts/QiStablecoin'
+import { Token } from './entities'
+import { PLATFORM } from './ProtocolInfo'
 
 export type SnapshotCanonicalChoiceName =
   | 'Wrapped MATIC (Polygon)'
@@ -320,6 +321,7 @@ export type VaultShortName =
   | 'dai'
   | 'usdc'
   | 'veaero'
+  | 'veaero-old'
   | 'cbbtc'
 
 export type RawVaultContractAbiV1 =
@@ -2595,7 +2597,7 @@ const BASE_COLLATERALS = [
     shortName: 'ezeth',
     vaultAddress: BASE_EZETH_VAULT_ADDRESS,
     chainId: ChainId.BASE,
-    token: new Token(ChainId.BASE, BASE_EZETH_ADDRESS, 18, 'ezETH',  'Renzo Restaked ETH'),
+    token: new Token(ChainId.BASE, BASE_EZETH_ADDRESS, 18, 'ezETH', 'Renzo Restaked ETH'),
     connect: StableQiVault__factory.connect,
     discriminator: 'StableQiVault',
     minimumCDR: 130,
@@ -2606,9 +2608,26 @@ const BASE_COLLATERALS = [
     platform: ['Renzo'],
     addedAt: 1715216400,
     deprecated: false,
-  },{
+  },
+  {
     shortName: 'veaero',
     vaultAddress: BASE_VE_AERO_VAULT_ADDRESS,
+    chainId: ChainId.BASE,
+    token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
+    connect: GraceQiVault__factory.connect,
+    discriminator: 'GraceQiVault',
+    minimumCDR: 300,
+    frontend: FRONTEND.MAI,
+    version: 2,
+    snapshotName: 'VeAero (Base)',
+    underlyingIds: ['aerodrome-finance'],
+    platform: ['Aerodrome'],
+    addedAt: 1712941200,
+    deprecated: false,
+  },
+  {
+    shortName: 'veaero-old',
+    vaultAddress: BASE_OLD_VE_AERO_VAULT_ADDRESS,
     chainId: ChainId.BASE,
     token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
     connect: GraceQiVault__factory.connect,
@@ -2636,8 +2655,7 @@ const BASE_COLLATERALS = [
     underlyingIds: ['coinbase-wrapped-bitcoin'],
     addedAt: 1734310800,
     deprecated: false,
-  }
-
+  },
 ] satisfies (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
 
 const LINEA_COLLATERALS = [
