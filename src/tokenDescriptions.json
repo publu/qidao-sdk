@@ -246,7 +246,7 @@
   },
   "coinbase-wrapped-bitcoin": {
     "shortDescription": "Coinbase Wrapped BTC is a token backed 1:1 by native Bitcoin held by Coinbase. It is a transferable token that is redeemable for the underlying BTC and is built to be seamlessly compatible with DeFi applications.",
-    "logo": "https://s2.tokeninsight.com/static/coins/img/currency/CoinbaseWrappedBitcoin_WBTC.png",
+    "logo": "https://assets.smold.app/api/token/8453/0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf/logo.svg",
     "name": "Coinbase Wrapped Bitcoin"
   }
 
