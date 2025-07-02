@@ -106,6 +106,8 @@ import {
   ZKEVM_WETH_VAULT_ADDRESS,
   ZKEVM_WMATIC_ADDRESS,
   ZKEVM_WMATIC_VAULT_ADDRESS,
+  BASE_LBTC_VAULT_ADDRESS,
+  BASE_LBTC_ADDRESS,
 } from './constants'
 import {
   CrosschainNativeQiStablecoin,
@@ -225,6 +227,7 @@ export type SnapshotCanonicalChoiceName =
   | 'ezETH (Base)'
   | 'VeAero (Base)'
   | 'cbBTC (Base)'
+  | 'LBTC (Base)'
 
 export type VaultShortName =
   | 'aave'
@@ -328,6 +331,7 @@ export type VaultShortName =
   | 'veaero'
   | 'veaero-old'
   | 'cbbtc'
+  | 'lbtc'
 
 export type RawVaultContractAbiV1 =
   | typeof qiStablecoin
@@ -2680,6 +2684,21 @@ const BASE_COLLATERALS = [
     version: 2,
     snapshotName: 'cbBTC (Base)',
     underlyingIds: ['coinbase-wrapped-bitcoin'],
+    addedAt: 1734310800,
+    deprecated: false,
+  },
+  {
+    shortName: 'lbtc',
+    vaultAddress: BASE_LBTC_VAULT_ADDRESS,
+    chainId: ChainId.BASE,
+    token: new Token(ChainId.BASE, BASE_LBTC_ADDRESS, 8, 'LBTC', 'Lombard BTC'),
+    connect: StableQiVault__factory.connect,
+    discriminator: 'StableQiVault',
+    minimumCDR: 125,
+    frontend: FRONTEND.MAI,
+    version: 2,
+    snapshotName: 'LBTC (Base)',
+    underlyingIds: [],
     addedAt: 1734310800,
     deprecated: false,
   },
