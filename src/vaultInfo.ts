@@ -1,5 +1,5 @@
-import {Provider} from '@ethersproject/providers'
-import {constants, Signer} from 'ethers'
+import { Provider } from '@ethersproject/providers'
+import { constants, Signer } from 'ethers'
 import {
   crosschainNativeQiStablecoin,
   crosschainQiStablecoin,
@@ -12,7 +12,7 @@ import {
   erc20Stablecoin,
   graceQiVault,
   qiStablecoin,
-  stableQiVault
+  stableQiVault,
 } from './abis'
 import {
   AAVE_ADDRESS,
@@ -108,6 +108,7 @@ import {
   ZKEVM_WMATIC_VAULT_ADDRESS,
   BASE_LBTC_VAULT_ADDRESS,
   BASE_LBTC_ADDRESS,
+  BASE_CLAIM_OUTDATE_VE_AERO_VAULT_ADDRESS,
 } from './constants'
 import {
   CrosschainNativeQiStablecoin,
@@ -330,6 +331,7 @@ export type VaultShortName =
   | 'usdc'
   | 'veaero'
   | 'veaero-old'
+  | 'veaero-outdated-claim'
   | 'cbbtc'
   | 'lbtc'
 
@@ -2646,6 +2648,22 @@ const BASE_COLLATERALS = [
     chainId: ChainId.BASE,
     token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
     connect: GraceQiVault__factory.connect,
+    discriminator: 'GraceQiVault',
+    minimumCDR: 300,
+    frontend: FRONTEND.MAI,
+    version: 2,
+    snapshotName: 'VeAero (Base)',
+    underlyingIds: ['aerodrome-finance'],
+    platform: ['Aerodrome'],
+    addedAt: 1712941200,
+    deprecated: false,
+  },
+  {
+    shortName: 'veaero-outdated-claim',
+    vaultAddress: BASE_CLAIM_OUTDATE_VE_AERO_VAULT_ADDRESS,
+    chainId: ChainId.BASE,
+    token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
+    connect: GraceQiVaultOld__factory.connect,
     discriminator: 'GraceQiVault',
     minimumCDR: 300,
     frontend: FRONTEND.MAI,
