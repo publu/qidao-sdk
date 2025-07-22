@@ -109,6 +109,7 @@ import {
   BASE_LBTC_VAULT_ADDRESS,
   BASE_LBTC_ADDRESS,
   BASE_CLAIM_OUTDATE_VE_AERO_VAULT_ADDRESS,
+  BASE_OUTDATE_OWNERSHIP_VE_AERO_VAULT_ADDRESS,
 } from './constants'
 import {
   CrosschainNativeQiStablecoin,
@@ -230,7 +231,7 @@ export type SnapshotCanonicalChoiceName =
   | 'cbBTC (Base)'
   | 'LBTC (Base)'
 
-export type VaultShortName =
+export type VaultShortName = 
   | 'aave'
   | 'avax'
   | 'avaxweth'
@@ -332,6 +333,7 @@ export type VaultShortName =
   | 'veaero'
   | 'veaero-old'
   | 'veaero-outdated-claim'
+  | 'veaero-outdated-ownership'
   | 'cbbtc'
   | 'lbtc'
 
@@ -2645,6 +2647,22 @@ const BASE_COLLATERALS = [
   {
     shortName: 'veaero',
     vaultAddress: BASE_VE_AERO_VAULT_ADDRESS,
+    chainId: ChainId.BASE,
+    token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
+    connect: GraceQiVault__factory.connect,
+    discriminator: 'GraceQiVault',
+    minimumCDR: 300,
+    frontend: FRONTEND.MAI,
+    version: 2,
+    snapshotName: 'VeAero (Base)',
+    underlyingIds: ['aerodrome-finance'],
+    platform: ['Aerodrome'],
+    addedAt: 1712941200,
+    deprecated: false,
+  },
+  {
+    shortName: 'veaero-outdated-ownership',
+    vaultAddress: BASE_OUTDATE_OWNERSHIP_VE_AERO_VAULT_ADDRESS,
     chainId: ChainId.BASE,
     token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
     connect: GraceQiVault__factory.connect,
