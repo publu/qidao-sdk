@@ -1,5 +1,5 @@
-import {Provider} from '@ethersproject/providers'
-import {constants, Signer} from 'ethers'
+import { Provider } from '@ethersproject/providers'
+import { constants, Signer } from 'ethers'
 import {
   crosschainNativeQiStablecoin,
   crosschainQiStablecoin,
@@ -12,7 +12,7 @@ import {
   erc20Stablecoin,
   graceQiVault,
   qiStablecoin,
-  stableQiVault
+  stableQiVault,
 } from './abis'
 import {
   AAVE_ADDRESS,
@@ -74,6 +74,8 @@ import {
   MATIC_WSTETH_VAULT_ADDRESS,
   MATICX_MAI_VAULT_ADDRESS,
   METIS_WBTC_ADDRESS,
+  METIS_PSM_ADDRESS,
+  METIS_USDC_ADDRESS,
   MOO_BIFI_FTM_VAULT_ADDRESS,
   MOO_ETH_STETH_CRV_VAULT_ADDRESS,
   MOO_SCREAM_DAI_VAULT_ADDRESS,
@@ -104,6 +106,11 @@ import {
   ZKEVM_WETH_VAULT_ADDRESS,
   ZKEVM_WMATIC_ADDRESS,
   ZKEVM_WMATIC_VAULT_ADDRESS,
+  BASE_LBTC_VAULT_ADDRESS,
+  BASE_LBTC_ADDRESS,
+  BASE_CLAIM_OUTDATE_VE_AERO_VAULT_ADDRESS,
+  BASE_OUTDATE_OWNERSHIP_VE_AERO_VAULT_ADDRESS,
+  BASE_VE_AERO_NO_FUND_RESCUE_VAULT_ADDRESS,
 } from './constants'
 import {
   CrosschainNativeQiStablecoin,
@@ -188,6 +195,7 @@ export type SnapshotCanonicalChoiceName =
   | 'WETH (Metis)'
   | 'WBTC (Metis)'
   | 'm.WBTC (Metis)'
+  | 'USDC (Metis)'
   | 'Yearn WETH (Ethereum)'
   | 'Yearn LINK (Ethereum)'
   | 'WBTC (Ethereum)'
@@ -222,6 +230,7 @@ export type SnapshotCanonicalChoiceName =
   | 'ezETH (Base)'
   | 'VeAero (Base)'
   | 'cbBTC (Base)'
+  | 'LBTC (Base)'
 
 export type VaultShortName =
   | 'aave'
@@ -324,7 +333,11 @@ export type VaultShortName =
   | 'usdc'
   | 'veaero'
   | 'veaero-old'
+  | 'veaero-outdated-claim'
+  | 'veaero-outdated-ownership'
+  | 'veaero-no-fund-rescue'
   | 'cbbtc'
+  | 'lbtc'
 
 export type RawVaultContractAbiV1 =
   | typeof qiStablecoin
@@ -405,7 +418,8 @@ export interface GAUGE_VALID_COLLATERAL extends COLLATERAL {
   snapshotName: SnapshotCanonicalChoiceName
 }
 
-export interface COLLATERAL_V2 extends Omit<COLLATERAL, 'version' | 'connect' | 'contractAbi' | 'rawAbi' | 'discriminator'> {
+export interface COLLATERAL_V2
+  extends Omit<COLLATERAL, 'version' | 'connect' | 'contractAbi' | 'rawAbi' | 'discriminator'> {
   version: 2
   connect(address: string, signerOrProvider: Signer | Provider): StableQiVault | GraceQiVault | GraceQiVaultOld
   discriminator: VaultContractDiscriminatorV2
@@ -2649,6 +2663,54 @@ const BASE_COLLATERALS = [
     deprecated: false,
   },
   {
+    shortName: 'veaero-no-fund-rescue',
+    vaultAddress: BASE_VE_AERO_NO_FUND_RESCUE_VAULT_ADDRESS,
+    chainId: ChainId.BASE,
+    token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
+    connect: GraceQiVault__factory.connect,
+    discriminator: 'GraceQiVault',
+    minimumCDR: 250,
+    frontend: FRONTEND.MAI,
+    version: 2,
+    snapshotName: 'VeAero (Base)',
+    underlyingIds: ['aerodrome-finance'],
+    platform: ['Aerodrome'],
+    addedAt: 1712941200,
+    deprecated: false,
+  },
+  {
+    shortName: 'veaero-outdated-ownership',
+    vaultAddress: BASE_OUTDATE_OWNERSHIP_VE_AERO_VAULT_ADDRESS,
+    chainId: ChainId.BASE,
+    token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
+    connect: GraceQiVault__factory.connect,
+    discriminator: 'GraceQiVault',
+    minimumCDR: 250,
+    frontend: FRONTEND.MAI,
+    version: 2,
+    snapshotName: 'VeAero (Base)',
+    underlyingIds: ['aerodrome-finance'],
+    platform: ['Aerodrome'],
+    addedAt: 1712941200,
+    deprecated: false,
+  },
+  {
+    shortName: 'veaero-outdated-claim',
+    vaultAddress: BASE_CLAIM_OUTDATE_VE_AERO_VAULT_ADDRESS,
+    chainId: ChainId.BASE,
+    token: new Token(ChainId.BASE, BASE_AERO_ADDRESS, 18, 'veAERO', 'Voting Escrowed Aerodrome'),
+    connect: GraceQiVaultOld__factory.connect,
+    discriminator: 'GraceQiVault',
+    minimumCDR: 300,
+    frontend: FRONTEND.MAI,
+    version: 2,
+    snapshotName: 'VeAero (Base)',
+    underlyingIds: ['aerodrome-finance'],
+    platform: ['Aerodrome'],
+    addedAt: 1712941200,
+    deprecated: false,
+  },
+  {
     shortName: 'veaero-old',
     vaultAddress: BASE_OLD_VE_AERO_VAULT_ADDRESS,
     chainId: ChainId.BASE,
@@ -2676,6 +2738,21 @@ const BASE_COLLATERALS = [
     version: 2,
     snapshotName: 'cbBTC (Base)',
     underlyingIds: ['coinbase-wrapped-bitcoin'],
+    addedAt: 1734310800,
+    deprecated: false,
+  },
+  {
+    shortName: 'lbtc',
+    vaultAddress: BASE_LBTC_VAULT_ADDRESS,
+    chainId: ChainId.BASE,
+    token: new Token(ChainId.BASE, BASE_LBTC_ADDRESS, 8, 'LBTC', 'Lombard BTC'),
+    connect: StableQiVault__factory.connect,
+    discriminator: 'StableQiVault',
+    minimumCDR: 125,
+    frontend: FRONTEND.MAI,
+    version: 2,
+    snapshotName: 'LBTC (Base)',
+    underlyingIds: [],
     addedAt: 1734310800,
     deprecated: false,
   },
@@ -2746,10 +2823,13 @@ const LINEA_COLLATERALS = [
   },
 ] satisfies (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
 
-const SCROLL_COLLATERALS = [
-
-] satisfies (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
-    //'0xbf1aeA8670D2528E08334083616dD9C5F3B087aE'
+const SCROLL_COLLATERALS = [] satisfies (
+  | COLLATERAL
+  | GAUGE_VALID_COLLATERAL
+  | COLLATERAL_V2
+  | GAUGE_VALID_COLLATERAL_V2
+)[]
+//'0xbf1aeA8670D2528E08334083616dD9C5F3B087aE'
 const FRAXTAL_COLLATERALS = [
   {
     shortName: 'sfrxETH',
@@ -2765,50 +2845,56 @@ const FRAXTAL_COLLATERALS = [
     underlyingIds: ['staked-frax-ether'],
     addedAt: 1709686800,
     deprecated: false,
-  }] satisfies (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
+  },
+] satisfies (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
 
-const EMPTY_COLLATERALS = [] satisfies (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
+const EMPTY_COLLATERALS = [] satisfies (
+  | COLLATERAL
+  | GAUGE_VALID_COLLATERAL
+  | COLLATERAL_V2
+  | GAUGE_VALID_COLLATERAL_V2
+)[]
 
 export const COLLATERALS: {
-  [ChainId.MAINNET]: typeof MAINNET_COLLATERALS,
-  [ChainId.FANTOM]: typeof FANTOM_COLLATERALS,
-  [ChainId.AVALANCHE]: typeof AVALANCHE_COLLATERALS,
-  [ChainId.ARBITRUM]: typeof ARBITRUM_COLLATERALS,
-  [ChainId.OPTIMISM]: typeof OPTIMISM_COLLATERALS,
-  [ChainId.MOONRIVER]: typeof MOONRIVER_COLLATERALS,
-  [ChainId.MOONBEAM]: typeof MOONBEAM_COLLATERALS,
-  [ChainId.HARMONY]: typeof HARMONY_COLLATERALS,
-  [ChainId.BSC]: typeof BSC_COLLATERALS,
-  [ChainId.XDAI]: typeof XDAI_COLLATERALS,
-  [ChainId.MATIC]: typeof MATIC_COLLATERALS,
-  [ChainId.METIS]: typeof METIS_COLLATERALS,
-  [ChainId.CUBE]: typeof EMPTY_COLLATERALS,
-  [ChainId.HECO]: typeof EMPTY_COLLATERALS,
-  [ChainId.KOVAN]: typeof EMPTY_COLLATERALS,
-  [ChainId.FUJI]: typeof EMPTY_COLLATERALS,
-  [ChainId.CELO]: typeof EMPTY_COLLATERALS,
-  [ChainId.MOONBASE]: typeof EMPTY_COLLATERALS,
-  [ChainId.BOBA]: typeof EMPTY_COLLATERALS,
-  [ChainId.AURORA]: typeof EMPTY_COLLATERALS,
-  [ChainId.GÖRLI]: typeof EMPTY_COLLATERALS,
-  [ChainId.MILKOMEDA]: typeof EMPTY_COLLATERALS,
-  [ChainId.BSC_TESTNET]: typeof EMPTY_COLLATERALS,
-  [ChainId.CRONOS]: typeof EMPTY_COLLATERALS,
-  [ChainId.MATIC_TESTNET]: typeof EMPTY_COLLATERALS,
-  [ChainId.FANTOM_TESTNET]: typeof EMPTY_COLLATERALS,
-  [ChainId.BSC_TESTNET]: typeof EMPTY_COLLATERALS,
-  [ChainId.HARMONY_TESTNET]: typeof EMPTY_COLLATERALS,
-  [ChainId.HECO_TESTNET]: typeof EMPTY_COLLATERALS,
-  [ChainId.SYSCOIN]: typeof EMPTY_COLLATERALS,
-  [ChainId.IOTEX]: typeof EMPTY_COLLATERALS,
-  [ChainId.KAVA]: typeof EMPTY_COLLATERALS,
-  [ChainId.KLAYTN]: typeof EMPTY_COLLATERALS,
-  [ChainId.CANTO]: typeof EMPTY_COLLATERALS,
-  [ChainId.DOGECHAIN]: typeof EMPTY_COLLATERALS,
-  [ChainId.ZKEVM]: typeof ZKEVM_COLLATERALS,
-  [ChainId.BASE]: typeof BASE_COLLATERALS,
-  [ChainId.LINEA]: typeof LINEA_COLLATERALS,
-  [ChainId.SCROLL]: typeof SCROLL_COLLATERALS,
+  [ChainId.MAINNET]: typeof MAINNET_COLLATERALS
+  [ChainId.FANTOM]: typeof FANTOM_COLLATERALS
+  [ChainId.AVALANCHE]: typeof AVALANCHE_COLLATERALS
+  [ChainId.ARBITRUM]: typeof ARBITRUM_COLLATERALS
+  [ChainId.OPTIMISM]: typeof OPTIMISM_COLLATERALS
+  [ChainId.MOONRIVER]: typeof MOONRIVER_COLLATERALS
+  [ChainId.MOONBEAM]: typeof MOONBEAM_COLLATERALS
+  [ChainId.HARMONY]: typeof HARMONY_COLLATERALS
+  [ChainId.BSC]: typeof BSC_COLLATERALS
+  [ChainId.XDAI]: typeof XDAI_COLLATERALS
+  [ChainId.MATIC]: typeof MATIC_COLLATERALS
+  [ChainId.METIS]: typeof METIS_COLLATERALS
+  [ChainId.CUBE]: typeof EMPTY_COLLATERALS
+  [ChainId.HECO]: typeof EMPTY_COLLATERALS
+  [ChainId.KOVAN]: typeof EMPTY_COLLATERALS
+  [ChainId.FUJI]: typeof EMPTY_COLLATERALS
+  [ChainId.CELO]: typeof EMPTY_COLLATERALS
+  [ChainId.MOONBASE]: typeof EMPTY_COLLATERALS
+  [ChainId.BOBA]: typeof EMPTY_COLLATERALS
+  [ChainId.AURORA]: typeof EMPTY_COLLATERALS
+  [ChainId.GÖRLI]: typeof EMPTY_COLLATERALS
+  [ChainId.MILKOMEDA]: typeof EMPTY_COLLATERALS
+  [ChainId.BSC_TESTNET]: typeof EMPTY_COLLATERALS
+  [ChainId.CRONOS]: typeof EMPTY_COLLATERALS
+  [ChainId.MATIC_TESTNET]: typeof EMPTY_COLLATERALS
+  [ChainId.FANTOM_TESTNET]: typeof EMPTY_COLLATERALS
+  [ChainId.BSC_TESTNET]: typeof EMPTY_COLLATERALS
+  [ChainId.HARMONY_TESTNET]: typeof EMPTY_COLLATERALS
+  [ChainId.HECO_TESTNET]: typeof EMPTY_COLLATERALS
+  [ChainId.SYSCOIN]: typeof EMPTY_COLLATERALS
+  [ChainId.IOTEX]: typeof EMPTY_COLLATERALS
+  [ChainId.KAVA]: typeof EMPTY_COLLATERALS
+  [ChainId.KLAYTN]: typeof EMPTY_COLLATERALS
+  [ChainId.CANTO]: typeof EMPTY_COLLATERALS
+  [ChainId.DOGECHAIN]: typeof EMPTY_COLLATERALS
+  [ChainId.ZKEVM]: typeof ZKEVM_COLLATERALS
+  [ChainId.BASE]: typeof BASE_COLLATERALS
+  [ChainId.LINEA]: typeof LINEA_COLLATERALS
+  [ChainId.SCROLL]: typeof SCROLL_COLLATERALS
   [ChainId.FRAXTAL]: typeof FRAXTAL_COLLATERALS
 } = {
   [ChainId.MAINNET]: MAINNET_COLLATERALS,
@@ -2849,12 +2935,10 @@ export const COLLATERALS: {
   [ChainId.BASE]: BASE_COLLATERALS,
   [ChainId.LINEA]: LINEA_COLLATERALS,
   [ChainId.SCROLL]: SCROLL_COLLATERALS,
-  [ChainId.FRAXTAL]: FRAXTAL_COLLATERALS
+  [ChainId.FRAXTAL]: FRAXTAL_COLLATERALS,
 } satisfies {
   [chainId in ChainId]: (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
 }
-
-
 export const PSM = {
   [ChainId.BASE]: [
     {
@@ -2871,7 +2955,7 @@ export const PSM = {
       connect: () => {
         throw new Error('not implemented')
       },
-      underlyingIds:[],
+      underlyingIds: [],
     },
     {
       chainId: ChainId.BASE,
@@ -2887,7 +2971,7 @@ export const PSM = {
       connect: () => {
         throw new Error('not implemented')
       },
-      underlyingIds:['beefy-finance', 'compound'],
+      underlyingIds: ['beefy-finance', 'compound'],
     },
     {
       chainId: ChainId.BASE,
@@ -2904,7 +2988,7 @@ export const PSM = {
         throw new Error('not implemented')
       },
       underlyingIds: [],
-    }
+    },
   ],
   [ChainId.LINEA]: [
     {
@@ -2921,24 +3005,45 @@ export const PSM = {
       connect: () => {
         throw new Error('not implemented')
       },
-      underlyingIds:['daidai'],
-    }],
-  [ChainId.MATIC]: [{
-    chainId: ChainId.MATIC,
-    vaultAddress: MATIC_PSM_ADDRESS,
-    token: new Token(ChainId.MATIC, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC.e', 'USDC.e'),
-    addedAt: 1706270929,
-    deprecated: false,
-    discriminator: 'StableQiVault',
-    frontend: FRONTEND.MAI,
-    minimumCDR: 200,
-    shortName: 'usdc',
-    version: 2,
-    connect: () => {
-      throw new Error('not implemented')
+      underlyingIds: ['daidai'],
     },
-    underlyingIds:['beefy-finance', 'compound'],
-  }]
+  ],
+  [ChainId.MATIC]: [
+    {
+      chainId: ChainId.MATIC,
+      vaultAddress: MATIC_PSM_ADDRESS,
+      token: new Token(ChainId.MATIC, '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', 6, 'USDC', 'USDC'),
+      addedAt: 1706270929,
+      deprecated: false,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: ['beefy-finance', 'compound'],
+    },
+  ],
+  [ChainId.METIS]: [
+    {
+      chainId: ChainId.METIS,
+      vaultAddress: METIS_PSM_ADDRESS,
+      token: new Token(ChainId.METIS, METIS_USDC_ADDRESS, 6, 'USDC', 'USDC'),
+      addedAt: 1750640400,
+      deprecated: false,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: [],
+    },
+  ],
 } as const satisfies {
   [chainId in ChainId]?: readonly (COLLATERAL | GAUGE_VALID_COLLATERAL | COLLATERAL_V2 | GAUGE_VALID_COLLATERAL_V2)[]
 }
