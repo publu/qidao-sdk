@@ -14,17 +14,15 @@ jobs:
   test:
     strategy:
       matrix:
-        node: ['16.x']
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: '16'
-          cache: 'yarn'
-      - run: yarn
-      - run: yarn build
-      - run: yarn run checkTokens
+          bun-version: latest
+      - run: bun install
+      - run: bun run build
+      - run: bun run checkTokens
