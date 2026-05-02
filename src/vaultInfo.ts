@@ -24,6 +24,9 @@ import {
   BASE_AERO_ADDRESS,
   BASE_AERO_VAULT_ADDRESS,
   BASE_BEEFY_COMPOUND_PSM_ADDRESS,
+  BASE_BEEFY_GAUNTLET_FRONTIER_V2_PSM_ADDRESS,
+  BASE_BEEFY_GAUNTLET_V2_PSM_ADDRESS,
+  BASE_BEEFY_STEAKHOUSE_V2_PSM_ADDRESS,
   BASE_CBBTC_ADDRESS,
   BASE_CBBTC_VAULT_ADDRESS,
   BASE_CBETH_ADDRESS,
@@ -45,6 +48,9 @@ import {
   CAMWMATIC_VAULT_ADDRESS,
   ChainId,
   ETH_BEEFY_CONVEX_STETH_VAULT_ADDRESS,
+  ETH_BEEFY_GAUNTLET_PSM_ADDRESS,
+  ETH_BEEFY_STEAKHOUSE_PSM_ADDRESS,
+  ETH_BEEFY_STEAKHOUSE_V2_PSM_ADDRESS,
   ETH_CBETH_ADDRESS,
   ETH_CBETH_VAULT_ADDRESS,
   ETH_CRV_ADDRESS,
@@ -76,6 +82,9 @@ import {
   METIS_WBTC_ADDRESS,
   METIS_PSM_ADDRESS,
   METIS_USDC_ADDRESS,
+  ZKEVM_PSM_ADDRESS,
+  ZKEVM_PSM_V2_ADDRESS,
+  ZKEVM_USDC_ADDRESS,
   MOO_BIFI_FTM_VAULT_ADDRESS,
   MOO_ETH_STETH_CRV_VAULT_ADDRESS,
   MOO_SCREAM_DAI_VAULT_ADDRESS,
@@ -414,6 +423,7 @@ export interface COLLATERAL {
   platform?: PLATFORM[]
   deprecated: boolean
   disabled?: boolean
+  type?: 'oneWay' | 'twoWay'
 }
 
 export interface GAUGE_VALID_COLLATERAL extends COLLATERAL {
@@ -2959,6 +2969,58 @@ export const COLLATERALS: {
 }
 export const PSM = {
   [ChainId.BASE]: [
+    // Active V2 Beefy PSMs (indices 0-2)
+    {
+      chainId: ChainId.BASE,
+      vaultAddress: BASE_BEEFY_GAUNTLET_V2_PSM_ADDRESS,
+      token: new Token(ChainId.BASE, '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', 6, 'USDC', 'USDC'),
+      addedAt: 1744416000,
+      deprecated: false,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: ['beefy-finance'],
+      type: 'twoWay' as const,
+    },
+    {
+      chainId: ChainId.BASE,
+      vaultAddress: BASE_BEEFY_GAUNTLET_FRONTIER_V2_PSM_ADDRESS,
+      token: new Token(ChainId.BASE, '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', 6, 'USDC', 'USDC'),
+      addedAt: 1744416000,
+      deprecated: false,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: ['beefy-finance'],
+      type: 'twoWay' as const,
+    },
+    {
+      chainId: ChainId.BASE,
+      vaultAddress: BASE_BEEFY_STEAKHOUSE_V2_PSM_ADDRESS,
+      token: new Token(ChainId.BASE, '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', 6, 'USDC', 'USDC'),
+      addedAt: 1744416000,
+      deprecated: false,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: ['beefy-finance'],
+      type: 'twoWay' as const,
+    },
     {
       chainId: ChainId.BASE,
       vaultAddress: BASE_MORPHO_STEAKHOUSE_PSM_ADDRESS,
@@ -3006,6 +3068,58 @@ export const PSM = {
         throw new Error('not implemented')
       },
       underlyingIds: [],
+    },
+  ],
+  [ChainId.MAINNET]: [
+    // Active V2 Beefy PSM (index 0)
+    {
+      chainId: ChainId.MAINNET,
+      vaultAddress: ETH_BEEFY_STEAKHOUSE_V2_PSM_ADDRESS,
+      token: new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USDC'),
+      addedAt: 1744416000,
+      deprecated: false,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: ['beefy-finance'],
+      type: 'twoWay' as const,
+    },
+    {
+      chainId: ChainId.MAINNET,
+      vaultAddress: ETH_BEEFY_GAUNTLET_PSM_ADDRESS,
+      token: new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USDC'),
+      addedAt: 1742054400,
+      deprecated: true,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: ['beefy-finance'],
+    },
+    {
+      chainId: ChainId.MAINNET,
+      vaultAddress: ETH_BEEFY_STEAKHOUSE_PSM_ADDRESS,
+      token: new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USDC'),
+      addedAt: 1742054400,
+      deprecated: true,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: ['beefy-finance'],
     },
   ],
   [ChainId.LINEA]: [
@@ -3060,6 +3174,42 @@ export const PSM = {
         throw new Error('not implemented')
       },
       underlyingIds: [],
+    },
+  ],
+  [ChainId.ZKEVM]: [
+    {
+      chainId: ChainId.ZKEVM,
+      vaultAddress: ZKEVM_PSM_ADDRESS,
+      token: new Token(ChainId.ZKEVM, ZKEVM_USDC_ADDRESS, 6, 'USDC', 'USDC'),
+      addedAt: 1741392000,
+      deprecated: true,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: [],
+      type: 'oneWay',
+    },
+    {
+      chainId: ChainId.ZKEVM,
+      vaultAddress: ZKEVM_PSM_V2_ADDRESS,
+      token: new Token(ChainId.ZKEVM, ZKEVM_USDC_ADDRESS, 6, 'USDC', 'USDC'),
+      addedAt: 1777420800,
+      deprecated: false,
+      discriminator: 'StableQiVault',
+      frontend: FRONTEND.MAI,
+      minimumCDR: 200,
+      shortName: 'usdc',
+      version: 2,
+      connect: () => {
+        throw new Error('not implemented')
+      },
+      underlyingIds: [],
+      type: 'oneWay',
     },
   ],
 } as const satisfies {
