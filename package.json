@@ -17,8 +17,24 @@
   "files": [
     "dist"
   ],
-  "repository": "https://github.com/royalaid/sushiswap-sdk",
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/royalaid/qidao-sdk.git"
+  },
+  "homepage": "https://github.com/royalaid/qidao-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/royalaid/qidao-sdk/issues"
+  },
+  "keywords": [
+    "qidao",
+    "mai",
+    "defi",
+    "ethereum",
+    "polygon",
+    "stablecoin",
+    "sdk",
+    "web3"
+  ],
   "scripts": {
     "checkTokens": "bun run src/scripts/validateCoinGeckoFallbackTokens.ts",
     "fetchTokenDescriptions": "node src/scripts/fetchTokenDescriptions.mjs",
